@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Android.App;
 using Android.Content;
+using Android.Content.PM;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
@@ -9,15 +10,17 @@ using Android.OS;
 using RadiusNetworks.IBeaconAndroid;
 //using Region = RadiusNetworks.IBeaconAndroid.Region;
 using Color = Android.Graphics.Color;
+using Android.Support.V4.App;
 
 namespace FindTheMonkey.Droid
 {
-	[Activity(Label = "Find The Monkey", MainLauncher = true)]
+	[Activity(Label = "Find The Monkey", MainLauncher = true, LaunchMode = LaunchMode.SingleTask)]
 	public class MainActivity : Activity, IBeaconConsumer
 	{
 		private const string UUID = "e4C8A4FCF68B470D959F29382AF72CE7";
 		private const string monkeyId = "Monkey";
 
+		bool _paused;
 		View _view;
 		IBeaconManager _iBeaconManager;
 		MonitorNotifier _monitorNotifier;
@@ -25,6 +28,7 @@ namespace FindTheMonkey.Droid
 		Region _monitoringRegion;
 		Region _rangingRegion;
 		TextView _text;
+
 		int _previousProximity;
 
 		public MainActivity()
@@ -55,8 +59,24 @@ namespace FindTheMonkey.Droid
 			_rangeNotifier.DidRangeBeaconsInRegionComplete += RangingBeaconsInRegion;
 		}
 
+		protected override void OnResume()
+		{
+			base.OnResume();
+			_paused = false;
+		}
+
+		protected override void OnPause()
+		{
+			base.OnPause();
+			_paused = true;
+		}
+
 		void EnteredRegion(object sender, MonitorEventArgs e)
 		{
+			if(_paused)
+			{
+				ShowNotification();
+			}
 		}
 
 		void ExitedRegion(object sender, MonitorEventArgs e)
@@ -108,6 +128,27 @@ namespace FindTheMonkey.Droid
 				_text.Text = message;
 				_view.SetBackgroundColor(color);
 			});
+		}
+
+		private void ShowNotification()
+		{
+			var resultIntent = new Intent(this, typeof(MainActivity));
+			resultIntent.AddFlags(ActivityFlags.ReorderToFront);
+			var pendingIntent = PendingIntent.GetActivity(this, 0, resultIntent, PendingIntentFlags.UpdateCurrent);
+			var notificationId = Resource.String.monkey_notification;
+
+			var builder = new NotificationCompat.Builder(this)
+				.SetSmallIcon(Resource.Drawable.Xamarin_Icon)
+				.SetContentTitle(this.GetText(Resource.String.app_label))
+				.SetContentText(this.GetText(Resource.String.monkey_notification))
+				.SetContentIntent(pendingIntent)
+				.SetAutoCancel(true);
+
+			var notification = builder.Build();
+			//notification.Flags = NotificationFlags.AutoCancel;
+
+			var notificationManager = (NotificationManager)GetSystemService(NotificationService);
+			notificationManager.Notify(notificationId, notification);
 		}
 
 		protected override void OnDestroy()

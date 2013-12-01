@@ -47,6 +47,9 @@ namespace FindTheMonkey.Droid
 			// aapt resource value: 0x7f020000
 			public const int Icon = 2130837504;
 			
+			// aapt resource value: 0x7f020001
+			public const int Xamarin_Icon = 2130837505;
+			
 			static Drawable()
 			{
 				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
@@ -96,10 +99,13 @@ namespace FindTheMonkey.Droid
 		{
 			
 			// aapt resource value: 0x7f040001
-			public const int app_name = 2130968577;
+			public const int app_label = 2130968577;
 			
 			// aapt resource value: 0x7f040000
-			public const int hello = 2130968576;
+			public const int app_name = 2130968576;
+			
+			// aapt resource value: 0x7f040002
+			public const int monkey_notification = 2130968578;
 			
 			static String()
 			{
