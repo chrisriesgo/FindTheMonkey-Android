@@ -145,7 +145,6 @@ namespace FindTheMonkey.Droid
 				.SetAutoCancel(true);
 
 			var notification = builder.Build();
-			//notification.Flags = NotificationFlags.AutoCancel;
 
 			var notificationManager = (NotificationManager)GetSystemService(NotificationService);
 			notificationManager.Notify(notificationId, notification);
