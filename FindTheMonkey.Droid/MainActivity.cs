@@ -3,12 +3,10 @@ using System.Linq;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
-using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
 using RadiusNetworks.IBeaconAndroid;
-//using Region = RadiusNetworks.IBeaconAndroid.Region;
 using Color = Android.Graphics.Color;
 using Android.Support.V4.App;
 
